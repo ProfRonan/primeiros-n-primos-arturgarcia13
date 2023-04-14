@@ -13,7 +13,7 @@ numTest = int(input("Digite um número: "))
              break 
      return e_primo 
   
- n = int(numTest)
+ n = 0
  x = 1
  while n <= numTest: 
      if primoTeste(x) : 
