@@ -1,0 +1,8 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.10, pytest-7.3.1, pluggy-1.0.0
+rootdir: /home/seuronao/Documents/primeiros-n-primos-04-24-2023-04-51-16/arturgarcia13
+collected 8 items
+
+test_main.py ........                                                    [100%]
+
+============================== 8 passed in 0.05s ===============================
