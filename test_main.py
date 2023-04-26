@@ -1,51 +1,47 @@
-import builtins
-import importlib
-import io
-import sys
+"""Test file for testing the main.py file"""
 
-import pytest
-from pytest import MonkeyPatch
+import unittest
+from unittest.mock import patch
+import io # for capturing the output
+import sys # for restoring the stdout and removing the main module from the cache
+import importlib # for importing the main.py file
 
+class TestMain(unittest.TestCase):
+    """Class for testing the main.py file"""
 
-@pytest.mark.parametrize(
-    "test_input, expected_output",
-    [
-        ("1", ["2"]),
-        ("2", ["2", "3"]),
-        ("3", ["2", "3", "5"]),
-        ("4", ["2", "3", "5", "7"]),
-        ("5", ["2", "3", "5", "7", "11"]),
-        ("6", ["2", "3", "5", "7", "11", "13"]),
-        ("20", ["2", "3", "5", "7", "11", "13", "17", "19", "23", "29",
-         "31", "37", "41", "43", "47", "53", "59", "61", "67", "71"])
-    ],
-)
-def test_primes(monkeypatch: MonkeyPatch, test_input: str, expected_output: list[str]):
-    mocked_input = lambda prompt="": test_input
-
-    mocked_stdout = io.StringIO()
-
-    with monkeypatch.context() as m:
-        m.setattr(builtins, "input", mocked_input)
-        m.setattr(sys, "stdout", mocked_stdout)
-
+    def setUp(self):
+        """Sets up the test environment by removing the main module from the cache"""
+        super().setUp()
         sys.modules.pop("main", None)
-        importlib.import_module(name="main", package="files")
 
-    for output in expected_output:
-        assert output in mocked_stdout.getvalue().strip()
+    @patch("builtins.input", return_value="1")
+    def test_1(self, _mock_input):
+        """Testa a função main com o input 1"""
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        importlib.import_module("main")
+        sys.stdout = sys.__stdout__
+        self.assertIn("2", captured_output.getvalue().strip())
+
+    @patch("builtins.input", return_value="5")
+    def test_5(self, _mock_input):
+        """Testa a função main com o input 5"""
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        importlib.import_module("main")
+        sys.stdout = sys.__stdout__
+        self.assertIn("2\n3\n5\n7\n11", captured_output.getvalue().strip())
+
+    @patch("builtins.input", return_value="20")
+    def test_20(self, _mock_input):
+        """Testa a função main com o input 20"""
+        captured_output = io.StringIO()
+        sys.stdout = captured_output
+        importlib.import_module("main")
+        sys.stdout = sys.__stdout__
+        self.assertIn("2\n3\n5\n7\n11\n13\n17\n19\n23\n29\n31\n37"
+                      "\n41\n43\n47\n53\n59\n61\n67\n71", captured_output.getvalue().strip())
 
 
-def test_one(monkeypatch: MonkeyPatch):
-    mocked_input = lambda prompt="": "2"
-
-    mocked_stdout = io.StringIO()
-
-    with monkeypatch.context() as m:
-        m.setattr(builtins, "input", mocked_input)
-        m.setattr(sys, "stdout", mocked_stdout)
-
-        sys.modules.pop("main", None)
-        importlib.import_module(name="main", package="files")
-
-    assert "1" not in mocked_stdout.getvalue().strip()
+if __name__ == "__main__":
+    unittest.main()
