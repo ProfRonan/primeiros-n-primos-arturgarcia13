@@ -1,9 +1,9 @@
 {
   "tests": [
     {
-      "name": "Testes gerais",
-      "setup": "sudo -H pip3 install pytest",
-      "run": "pytest",
+      "name": "Test All",
+      "setup": "",
+      "run": "python -m unittest",
       "input": "",
       "output": "",
       "comparison": "included",
